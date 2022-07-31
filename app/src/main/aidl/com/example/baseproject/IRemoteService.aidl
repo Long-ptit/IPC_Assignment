@@ -13,5 +13,5 @@ interface IRemoteService {
          void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat,
             double aDouble, String aString);
 
-            oneway void sendParcel(in MyParcel parcel, ICallBack callback);
+            oneway void sendParcel( ICallBack callback);
 }

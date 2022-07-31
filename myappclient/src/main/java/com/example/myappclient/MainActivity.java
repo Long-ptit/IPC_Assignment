@@ -11,6 +11,8 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.baseproject.ICallBack;
 import com.example.baseproject.IRemoteService;
@@ -24,30 +26,16 @@ public class MainActivity extends AppCompatActivity {
 
     private ICallBack callBack = new ICallBack.Stub() {
         @Override
-        public void onFinish() {
-            Log.d(TAG, "Client Receive Finish: ");
+        public void onFinish(String aString) throws RemoteException {
+            Log.d(TAG, "onFinish: " + aString);
         }
+
     };
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             iRemoteService = IRemoteService.Stub.asInterface(service);
-            try {
-                Log.d(TAG, "Client: " + iRemoteService.getPid());
-                MyParcel myParcel = new MyParcel();
-                myParcel.aString = "Hihi";
-                iRemoteService.sendParcel(myParcel, callBack);
-                iRemoteService.basicTypes(
-                        1,
-                        1,
-                        true,
-                        1f,
-                        1d,
-                        "Trinh Xuan Long 0612"
-                );
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
@@ -65,6 +53,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Button button = findViewById(R.id.btn_buy);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    iRemoteService.sendParcel(callBack);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         String pkgName = "com.example.baseproject";
         String serviceName = pkgName + ".MyRemoteService";

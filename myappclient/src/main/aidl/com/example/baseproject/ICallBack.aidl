@@ -8,5 +8,5 @@ interface ICallBack {
      * Demonstrates some basic types that you can use as parameters
      * and return values in AIDL.
      */
-    void onFinish();
+    void onFinish(String aString);
 }
