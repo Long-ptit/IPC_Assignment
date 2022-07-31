@@ -13,6 +13,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.baseproject.ICallBack;
 import com.example.baseproject.IRemoteService;
@@ -23,11 +24,13 @@ import java.sql.Connection;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MyLog";
     private IRemoteService iRemoteService;
+    private TextView mTextView;
 
     private ICallBack callBack = new ICallBack.Stub() {
         @Override
         public void onFinish(String aString) throws RemoteException {
             Log.d(TAG, "onFinish: " + aString);
+            mTextView.setText(aString);
         }
 
     };
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            Log.d(TAG, "null bind: ");
         }
 
         @Override
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button button = findViewById(R.id.btn_buy);
+        mTextView = findViewById(R.id.tv_noti);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,22 +70,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initProduction();
+    }
+
+    private void initProduction() {
         String pkgName = "com.example.baseproject";
         String serviceName = pkgName + ".MyRemoteService";
 
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(pkgName, serviceName));
         intent.putExtra("msg", "Trinh Xuan Long");
-        if ( startService(intent) == null) {
-            Log.d(TAG, "null create service: ");
-        }
-
-        Intent intent1 = new Intent();
-        intent1.setPackage(pkgName);
-        intent1.setClassName(pkgName, serviceName);
-
-        if (!bindService(intent1, mConnection, Context.BIND_AUTO_CREATE)) {
-            Log.d(TAG, "null bind: ");
+        try {
+            startService(intent);
+            Intent intent1 = new Intent();
+            intent1.setPackage(pkgName);
+            intent1.setClassName(pkgName, serviceName);
+            if (!bindService(intent1, mConnection, Context.BIND_AUTO_CREATE)) {
+                Log.d(TAG, "null bind: ");
+            }
+        } catch (Exception e) {
+            mTextView.setText("you need start server app");
+            e.printStackTrace();
         }
     }
 }

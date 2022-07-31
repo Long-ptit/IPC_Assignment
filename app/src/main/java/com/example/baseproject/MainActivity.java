@@ -24,11 +24,11 @@ public class MainActivity extends AppCompatActivity {
 		String pkgName = "com.example.baseproject";
 		String serviceName = pkgName + ".MyRemoteService";
 
-		Intent intent = new Intent();
-		intent.setComponent(new ComponentName(pkgName, serviceName));
-		intent.putExtra("msg", "kaka");
-		if ( startService(intent) == null) {
-			Log.d(TAG, "null: ");
-		}
+//		Intent intent = new Intent();
+//		intent.setComponent(new ComponentName(pkgName, serviceName));
+//		intent.putExtra("msg", "kaka");
+//		if ( startService(intent) == null) {
+//			Log.d(TAG, "null: ");
+//		}
 	}
 }

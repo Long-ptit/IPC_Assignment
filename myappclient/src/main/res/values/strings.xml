@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MyAppClient</string>
+    <string name="normal">Normal</string>
 </resources>

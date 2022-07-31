@@ -83,7 +83,7 @@ public class MyRemoteService extends Service {
                             numberProduct--;
                             try {
                                 Log.d(TAG, "run thanh cong ");
-                                callback.onFinish("Lay hang thanh cong, hang trong kho: " + numberProduct);
+                                callback.onFinish("Success, goods in inventory: " + numberProduct);
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                             }
