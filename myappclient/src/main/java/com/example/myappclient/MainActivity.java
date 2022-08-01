@@ -17,14 +17,6 @@ import android.widget.TextView;
 
 import com.example.baseproject.ICallBack;
 import com.example.baseproject.IRemoteService;
-import com.example.baseproject.MyParcel;
-
-import java.sql.Connection;
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MyLog";
@@ -35,12 +27,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onFinish(String aString) throws RemoteException {
             Log.d(TAG, "onFinish: " + aString);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mTextView.setText(aString);
-                }
-            });
+            runOnUiThread(() -> mTextView.setText(aString));
+        }
+
+        @Override
+        public void onWaiting(String aString) throws RemoteException {
+            Log.d(TAG, "onFinish: " + aString);
+            //it run too fast so can not see the result
+            //runOnUiThread(() -> mTextView.setText(aString));
         }
 
     };
@@ -71,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         button.setOnClickListener(v -> {
             try {
-                iRemoteService.sendParcel(callBack);
+                iRemoteService.sendProduct(callBack);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -87,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initProduction() {
-//        mTextView.setText("long deptrai fsjdhjsfdhsdfjk");
+        mTextView.setText("Normal");
         String pkgName = "com.example.baseproject";
         String serviceName = pkgName + ".MyRemoteService";
 
@@ -108,14 +102,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String dateConvert(long durationInMillis) {
-        long millis = durationInMillis % 1000;
-        long second = (durationInMillis / 1000) % 60;
-        long minute = (durationInMillis / (1000 * 60)) % 60;
-        long hour = (durationInMillis / (1000 * 60 * 60)) % 24;
-
-        String time = String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
-
-        return time;
-    }
 }

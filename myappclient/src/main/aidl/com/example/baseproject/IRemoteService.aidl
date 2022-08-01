@@ -1,6 +1,5 @@
 // IRemoteService.aidl
 package com.example.baseproject;
-import com.example.baseproject.MyParcel;
 import com.example.baseproject.ICallBack;
 // Declare any non-default types here with import statements
 
@@ -10,8 +9,6 @@ interface IRemoteService {
      * and return values in AIDL.
      */
      int getPid();
-         void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat,
-            double aDouble, String aString);
 
-            oneway void sendParcel( ICallBack callback);
+            oneway void sendProduct( ICallBack callback);
 }

@@ -9,4 +9,5 @@ interface ICallBack {
      * and return values in AIDL.
      */
     void onFinish(String aString);
+    void onWaiting(String aString);
 }

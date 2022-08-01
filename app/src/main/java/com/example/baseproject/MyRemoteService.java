@@ -2,8 +2,6 @@ package com.example.baseproject;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
 import android.os.RemoteException;
@@ -13,41 +11,36 @@ import androidx.annotation.Nullable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MyRemoteService extends Service {
     private static final String TAG = "MyLog";
-    int numberProduct;
-    private HandlerThread mHandlerThread;
-    private Handler mHandler;
+    private int mNumberProduct;
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: ");
-        numberProduct = 0;
-        mHandlerThread = new HandlerThread("Request");
-         mHandlerThread.start();
-        mHandler = new Handler(mHandlerThread.getLooper());
+        mNumberProduct = 0;
         initProduction();
     }
 
     private void initProduction() {
+        Log.d(TAG, "initProduction: ");
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    if (numberProduct < 10) {
+                    if (mNumberProduct < 10) {
                         try {
                             Thread.sleep(3000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        numberProduct++;
+                        mNumberProduct++;
                     }
                 }
             }
@@ -64,32 +57,30 @@ public class MyRemoteService extends Service {
     //    private I
     private IRemoteService remoteService = new IRemoteService.Stub() {
 
-
         @Override
         public int getPid() {
             return Process.myPid();
         }
 
         @Override
-        public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException {
-            Log.d(TAG, "send basis type: " + aString);
-        }
-
-        @Override
-        public void sendParcel(ICallBack callback) throws RemoteException {
-            mHandler.post(new Runnable() {
+        public void sendProduct(ICallBack callback) throws RemoteException {
+            mExecutorService.execute(new Runnable() {
                 @Override
                 public void run() {
+                    if (mNumberProduct == 0) {
+                        try {
+                            callback.onWaiting("Product in production");
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     while (true) {
-                        Log.d(TAG, "run: " + numberProduct);
-                        if (numberProduct > 0) {
-                            numberProduct--;
+                        Log.d(TAG, "run: " + mNumberProduct);
+                        if (mNumberProduct > 0) {
+                            mNumberProduct--;
                             try {
-                                Log.d(TAG, "run thanh cong ");
-                                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                                Date date = new Date();
-                                String time = "[" + dateFormat.format(date) + "]";
-                                callback.onFinish(getDateNow() + " Success, goods in inventory: " + numberProduct);
+                                Log.d(TAG, "run success ");
+                                callback.onFinish(getDateNow() + " Success, goods in inventory: " + mNumberProduct);
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                             }
@@ -99,8 +90,6 @@ public class MyRemoteService extends Service {
                 }
             });
         }
-
-
     };
 
 
