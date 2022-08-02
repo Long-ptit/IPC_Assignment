@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">Base Project</string>
+    <string name="server_open_let_s_go_to_the_client_app">Server open! Let\'s go to the client app!</string>
 </resources>

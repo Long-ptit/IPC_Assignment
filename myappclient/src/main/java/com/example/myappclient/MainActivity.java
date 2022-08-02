@@ -60,14 +60,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button button = findViewById(R.id.btn_buy);
         mTextView = findViewById(R.id.tv_noti);
 
-        button.setOnClickListener(v -> {
+        findViewById(R.id.btn_buy).setOnClickListener(v -> {
             try {
                 iRemoteService.sendProduct(callBack);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                mTextView.setText("Has error!");
             }
         });
 
